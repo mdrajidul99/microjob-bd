@@ -1,0 +1,315 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "Public user profile information",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "maxLength": 128 },
+        "email": { "type": "string", "maxLength": 256 },
+        "displayName": { "type": "string", "maxLength": 100 },
+        "phoneNumber": { "type": "string", "maxLength": 30 },
+        "role": { "type": "string", "enum": ["user", "admin"] },
+        "activeRole": { "type": "string", "enum": ["freelancer", "client"] },
+        "photoURL": { "type": "string", "maxLength": 1000 },
+        "bio": { "type": "string", "maxLength": 500 },
+        "skills": { "type": "string", "maxLength": 500 },
+        "isVerified": { "type": "boolean" },
+        "suspended": { "type": "boolean" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["uid", "email", "displayName"]
+    },
+    "Category": {
+      "title": "Job Category",
+      "description": "Platform job categories managed by admin",
+      "type": "object",
+      "properties": {
+        "nameEn": { "type": "string", "maxLength": 100 },
+        "nameBn": { "type": "string", "maxLength": 100 },
+        "icon": { "type": "string", "maxLength": 50 },
+        "descriptionEn": { "type": "string", "maxLength": 300 },
+        "descriptionBn": { "type": "string", "maxLength": 300 },
+        "active": { "type": "boolean" },
+        "order": { "type": "number" }
+      },
+      "required": ["nameEn", "nameBn", "active"]
+    },
+    "Job": {
+      "title": "Microjob Posting",
+      "description": "Job posted by client",
+      "type": "object",
+      "properties": {
+        "clientId": { "type": "string", "maxLength": 128 },
+        "clientName": { "type": "string", "maxLength": 100 },
+        "title": { "type": "string", "maxLength": 150 },
+        "categoryId": { "type": "string", "maxLength": 64 },
+        "description": { "type": "string", "maxLength": 5000 },
+        "instructions": { "type": "string", "maxLength": 5000 },
+        "rewardPerWorker": { "type": "number" },
+        "workersNeeded": { "type": "number" },
+        "workersCompleted": { "type": "number" },
+        "totalBudget": { "type": "number" },
+        "platformFee": { "type": "number" },
+        "status": { "type": "string", "enum": ["draft", "pending", "active", "paused", "completed", "cancelled", "rejected"] },
+        "rejectionReason": { "type": "string", "maxLength": 500 },
+        "deadlineDays": { "type": "number" },
+        "proofRequirements": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["clientId", "title", "categoryId", "rewardPerWorker", "workersNeeded", "totalBudget", "status"]
+    },
+    "Submission": {
+      "title": "Work Submission",
+      "description": "Proof submitted by freelancer",
+      "type": "object",
+      "properties": {
+        "jobId": { "type": "string", "maxLength": 128 },
+        "jobTitle": { "type": "string", "maxLength": 150 },
+        "clientId": { "type": "string", "maxLength": 128 },
+        "freelancerId": { "type": "string", "maxLength": 128 },
+        "freelancerName": { "type": "string", "maxLength": 100 },
+        "freelancerEmail": { "type": "string", "maxLength": 256 },
+        "reward": { "type": "number" },
+        "status": { "type": "string", "enum": ["submitted", "revision_requested", "approved", "rejected", "disputed"] },
+        "proofAnswers": { "type": "string", "maxLength": 10000 },
+        "rejectionReason": { "type": "string", "maxLength": 500 },
+        "revisionNotes": { "type": "string", "maxLength": 500 },
+        "submittedAt": { "type": "string" },
+        "reviewedAt": { "type": "string" }
+      },
+      "required": ["jobId", "clientId", "freelancerId", "status"]
+    },
+    "JobConversation": {
+      "title": "Job Conversation",
+      "description": "Chat thread between client and freelancer for a job",
+      "type": "object",
+      "properties": {
+        "jobId": { "type": "string", "maxLength": 128 },
+        "jobTitle": { "type": "string", "maxLength": 150 },
+        "clientId": { "type": "string", "maxLength": 128 },
+        "freelancerId": { "type": "string", "maxLength": 128 },
+        "lastMessage": { "type": "string", "maxLength": 500 },
+        "lastMessageAt": { "type": "string" },
+        "lastSenderId": { "type": "string", "maxLength": 128 },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["jobId", "clientId", "freelancerId"]
+    },
+    "ChatMessage": {
+      "title": "Chat Message",
+      "description": "Individual message in job conversation",
+      "type": "object",
+      "properties": {
+        "conversationId": { "type": "string", "maxLength": 128 },
+        "senderId": { "type": "string", "maxLength": 128 },
+        "senderName": { "type": "string", "maxLength": 100 },
+        "text": { "type": "string", "maxLength": 2000 },
+        "timestamp": { "type": "string" }
+      },
+      "required": ["conversationId", "senderId", "text"]
+    },
+    "Wallet": {
+      "title": "User Dual Wallet",
+      "description": "Separate Client Deposit and Freelancer Earnings balances",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "maxLength": 128 },
+        "clientDepositBalance": { "type": "number" },
+        "clientReservedBalance": { "type": "number" },
+        "freelancerEarningsBalance": { "type": "number" },
+        "freelancerPendingWithdrawal": { "type": "number" },
+        "totalDeposited": { "type": "number" },
+        "totalEarned": { "type": "number" },
+        "totalWithdrawn": { "type": "number" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["userId"]
+    },
+    "WalletTransaction": {
+      "title": "Financial Ledger Transaction",
+      "description": "Immutable ledger record of all balance movements",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "maxLength": 128 },
+        "walletType": { "type": "string", "enum": ["client_deposit", "freelancer_earnings"] },
+        "type": { "type": "string", "enum": ["deposit", "job_budget_reserve", "job_budget_refund", "worker_payout", "platform_fee", "withdrawal_reserve", "withdrawal_paid", "withdrawal_rejected_refund"] },
+        "amount": { "type": "number" },
+        "currency": { "type": "string", "maxLength": 10 },
+        "status": { "type": "string", "enum": ["completed", "pending", "failed", "reversed"] },
+        "referenceId": { "type": "string", "maxLength": 128 },
+        "description": { "type": "string", "maxLength": 255 },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["userId", "walletType", "type", "amount", "status"]
+    },
+    "DepositRequest": {
+      "title": "Deposit Request",
+      "description": "Client deposit via bKash/Nagad pending admin verification",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "maxLength": 128 },
+        "userName": { "type": "string", "maxLength": 100 },
+        "userEmail": { "type": "string", "maxLength": 256 },
+        "userPhone": { "type": "string", "maxLength": 30 },
+        "amount": { "type": "number" },
+        "paymentMethod": { "type": "string", "enum": ["bkash", "nagad"] },
+        "senderNumber": { "type": "string", "maxLength": 30 },
+        "transactionId": { "type": "string", "maxLength": 100 },
+        "status": { "type": "string", "enum": ["pending", "approved", "rejected"] },
+        "rejectionReason": { "type": "string", "maxLength": 500 },
+        "requestedAt": { "type": "string" },
+        "reviewedAt": { "type": "string" },
+        "reviewedBy": { "type": "string", "maxLength": 128 }
+      },
+      "required": ["userId", "amount", "paymentMethod", "senderNumber", "transactionId", "status"]
+    },
+    "WithdrawalRequest": {
+      "title": "Withdrawal Request",
+      "description": "Freelancer payout request via bKash/Nagad",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "maxLength": 128 },
+        "userName": { "type": "string", "maxLength": 100 },
+        "userEmail": { "type": "string", "maxLength": 256 },
+        "amount": { "type": "number" },
+        "paymentMethod": { "type": "string", "enum": ["bkash", "nagad"] },
+        "recipientNumber": { "type": "string", "maxLength": 30 },
+        "status": { "type": "string", "enum": ["pending", "under_review", "approved", "paid", "rejected"] },
+        "transactionId": { "type": "string", "maxLength": 100 },
+        "rejectionReason": { "type": "string", "maxLength": 500 },
+        "requestedAt": { "type": "string" },
+        "completedAt": { "type": "string" },
+        "completedBy": { "type": "string", "maxLength": 128 }
+      },
+      "required": ["userId", "amount", "paymentMethod", "recipientNumber", "status"]
+    },
+    "Notification": {
+      "title": "Notification",
+      "description": "Platform alerts for user or admin",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "maxLength": 128 },
+        "titleEn": { "type": "string", "maxLength": 200 },
+        "titleBn": { "type": "string", "maxLength": 200 },
+        "messageEn": { "type": "string", "maxLength": 1000 },
+        "messageBn": { "type": "string", "maxLength": 1000 },
+        "type": { "type": "string", "maxLength": 50 },
+        "link": { "type": "string", "maxLength": 255 },
+        "isRead": { "type": "boolean" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["userId", "titleEn", "titleBn", "messageEn", "isRead"]
+    },
+    "ContactMessage": {
+      "title": "Contact Message",
+      "description": "Public contact inquiry sent to support",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "maxLength": 100 },
+        "email": { "type": "string", "maxLength": 256 },
+        "subject": { "type": "string", "maxLength": 200 },
+        "message": { "type": "string", "maxLength": 5000 },
+        "status": { "type": "string", "enum": ["new", "in_progress", "resolved", "archived"] },
+        "createdAt": { "type": "string" },
+        "resolvedAt": { "type": "string" }
+      },
+      "required": ["name", "email", "subject", "message", "status"]
+    },
+    "PlatformSettings": {
+      "title": "Platform Settings",
+      "description": "Platform configuration managed by admin",
+      "type": "object",
+      "properties": {
+        "siteName": { "type": "string", "maxLength": 100 },
+        "contactEmail": { "type": "string", "maxLength": 256 },
+        "minimumWithdrawal": { "type": "number" },
+        "platformFeePercent": { "type": "number" },
+        "maintenanceMode": { "type": "boolean" },
+        "announcementEn": { "type": "string", "maxLength": 500 },
+        "announcementBn": { "type": "string", "maxLength": 500 },
+        "bkashNumber": { "type": "string", "maxLength": 30 },
+        "bkashInstructions": { "type": "string", "maxLength": 1000 },
+        "nagadNumber": { "type": "string", "maxLength": 30 },
+        "nagadInstructions": { "type": "string", "maxLength": 1000 },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["siteName", "contactEmail", "minimumWithdrawal"]
+    },
+    "AuditLog": {
+      "title": "Audit Log",
+      "description": "Immutable security and administrative audit log",
+      "type": "object",
+      "properties": {
+        "actorUid": { "type": "string", "maxLength": 128 },
+        "actorEmail": { "type": "string", "maxLength": 256 },
+        "actionType": { "type": "string", "maxLength": 100 },
+        "targetCollection": { "type": "string", "maxLength": 100 },
+        "targetId": { "type": "string", "maxLength": 128 },
+        "details": { "type": "string", "maxLength": 2000 },
+        "timestamp": { "type": "string" }
+      },
+      "required": ["actorUid", "actionType", "timestamp"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profile collection"
+    },
+    "/categories/{categoryId}": {
+      "schema": "Category",
+      "description": "Job categories collection"
+    },
+    "/jobs/{jobId}": {
+      "schema": "Job",
+      "description": "Microjobs collection"
+    },
+    "/submissions/{submissionId}": {
+      "schema": "Submission",
+      "description": "Submissions collection"
+    },
+    "/jobConversations/{conversationId}": {
+      "schema": "JobConversation",
+      "description": "Job conversation thread"
+    },
+    "/jobConversations/{conversationId}/messages/{messageId}": {
+      "schema": "ChatMessage",
+      "description": "Chat messages in a job conversation"
+    },
+    "/wallets/{userId}": {
+      "schema": "Wallet",
+      "description": "User dual-wallet balances"
+    },
+    "/walletTransactions/{txId}": {
+      "schema": "WalletTransaction",
+      "description": "Append-only financial transaction ledger"
+    },
+    "/depositRequests/{requestId}": {
+      "schema": "DepositRequest",
+      "description": "Manual deposit review requests"
+    },
+    "/withdrawalRequests/{requestId}": {
+      "schema": "WithdrawalRequest",
+      "description": "Freelancer withdrawal requests"
+    },
+    "/notifications/{notificationId}": {
+      "schema": "Notification",
+      "description": "User and admin notifications"
+    },
+    "/contactMessages/{messageId}": {
+      "schema": "ContactMessage",
+      "description": "Public contact form inquiries"
+    },
+    "/platformSettings/{settingId}": {
+      "schema": "PlatformSettings",
+      "description": "Platform settings and payment gateway configurations"
+    },
+    "/auditLogs/{logId}": {
+      "schema": "AuditLog",
+      "description": "Administrative audit trail"
+    }
+  }
+}

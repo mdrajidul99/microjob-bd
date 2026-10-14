@@ -1,0 +1,6 @@
+{
+  "name": "Microjob BD",
+  "description": "Premium, secure, bilingual microtask marketplace connecting freelancers and clients with automated workflows and admin control.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

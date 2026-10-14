@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Microjob BD - Premium Microtask Marketplace</title>
+    <meta name="description" content="Premium, secure, bilingual microtask marketplace connecting freelancers and clients with automated workflows and admin control." />
+    <meta property="og:title" content="Microjob BD - Premium Microtask Marketplace" />
+    <meta property="og:description" content="Premium, secure, bilingual microtask marketplace connecting freelancers and clients with automated workflows and admin control." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" type="image/png" href="%BASE_URL%assets/microjob-bd-logo.png" />
+    <link rel="apple-touch-icon" href="%BASE_URL%assets/microjob-bd-logo.png" />
+    <!-- Single Page App routing script for GitHub Pages -->
+    <script type="text/javascript">
+      (function(l) {
+        if (l.search[1] === '/' ) {
+          var decoded = l.search.slice(1).split('&').map(function(s) { 
+            return s.replace(/~and~/g, '&');
+          }).join('?');
+          window.history.replaceState(null, null,
+              l.pathname.slice(0, -1) + decoded + l.hash
+          );
+        }
+      }(window.location))
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+
