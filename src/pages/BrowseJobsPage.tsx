@@ -84,7 +84,7 @@ export const BrowseJobsPage: React.FC<BrowseJobsPageProps> = ({
       <div className="bg-white dark:bg-slate-800 rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-700 shadow-xs mb-8 space-y-4">
         {/* Search Input */}
         <form onSubmit={handleSearchSubmit} className="flex gap-2">
-          <div className="relative flex-1">
+          <div className="relative flex-1 min-w-0">
             <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"

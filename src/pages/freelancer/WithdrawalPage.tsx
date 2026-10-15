@@ -286,8 +286,8 @@ export const WithdrawalPage: React.FC = () => {
             No withdrawal requests made yet.
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
+          <div className="overflow-x-auto w-full">
+            <table className="w-full text-left text-xs min-w-[550px]">
               <thead>
                 <tr className="border-b border-slate-100 dark:border-slate-700 text-slate-400 font-bold">
                   <th className="py-2.5 px-3">Date</th>

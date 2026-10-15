@@ -76,7 +76,7 @@ export const TransactionHistoryPage: React.FC = () => {
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-3">
+      <div className="flex flex-wrap items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-3">
         <span className="text-xs font-bold text-slate-400 flex items-center gap-1 mr-2">
           <Filter className="w-3.5 h-3.5" /> Filter by Wallet:
         </span>
@@ -115,8 +115,8 @@ export const TransactionHistoryPage: React.FC = () => {
             No financial transactions recorded yet.
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
+          <div className="overflow-x-auto w-full">
+            <table className="w-full text-left text-xs min-w-[550px]">
               <thead>
                 <tr className="border-b border-slate-100 dark:border-slate-700 text-slate-400 font-bold">
                   <th className="py-2.5 px-3">Date</th>

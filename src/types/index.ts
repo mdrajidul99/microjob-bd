@@ -239,3 +239,13 @@ export interface AuditLog {
   details: string;
   timestamp: string;
 }
+
+export interface RecycleBinItem {
+  id: string;
+  itemType: 'job' | 'user' | 'category' | 'contact';
+  originalId: string;
+  title: string;
+  deletedAt: string;
+  deletedBy: string;
+  data: any;
+}

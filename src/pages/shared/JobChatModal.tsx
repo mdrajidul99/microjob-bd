@@ -182,7 +182,7 @@ export const JobChatModal: React.FC<JobChatModalProps> = ({
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
             placeholder={t('chat.placeholder')}
-            className="flex-1 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            className="flex-1 min-w-0 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
           />
 
           <button

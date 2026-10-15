@@ -208,12 +208,12 @@ export const MySubmissions: React.FC<MySubmissionsProps> = ({ onOpenChat, onNavi
                         href={ans.value}
                         target="_blank"
                         rel="noreferrer"
-                        className="text-emerald-600 dark:text-emerald-400 underline font-medium inline-flex items-center gap-1"
+                        className="text-emerald-600 dark:text-emerald-400 underline font-medium inline-flex items-center gap-1 break-all"
                       >
-                        {ans.value} <ExternalLink className="w-3 h-3" />
+                        {ans.value} <ExternalLink className="w-3 h-3 shrink-0" />
                       </a>
                     ) : (
-                      <span className="text-slate-800 dark:text-slate-200 font-mono">
+                      <span className="text-slate-800 dark:text-slate-200 font-mono break-all">
                         {ans.value}
                       </span>
                     )}

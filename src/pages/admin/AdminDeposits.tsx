@@ -138,8 +138,8 @@ export const AdminDeposits: React.FC = () => {
             No deposit requests found in this filter.
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
+          <div className="overflow-x-auto w-full">
+            <table className="w-full text-left text-xs min-w-[650px]">
               <thead>
                 <tr className="border-b border-slate-100 dark:border-slate-700 text-slate-400 font-bold">
                   <th className="py-2.5 px-3">Date</th>

@@ -48,7 +48,7 @@ export const Logo: React.FC<LogoProps> = ({
           <span className={`font-black tracking-tight text-slate-900 dark:text-white ${textSizes[size]}`}>
             Microjob<span className="text-emerald-600 dark:text-emerald-400">BD</span>
           </span>
-          <span className="text-[9px] font-bold tracking-widest text-slate-500 dark:text-slate-400 uppercase">
+          <span className="hidden sm:block text-[9px] font-bold tracking-widest text-slate-500 dark:text-slate-400 uppercase">
             BY MRS ENGINEERS BD
           </span>
         </div>

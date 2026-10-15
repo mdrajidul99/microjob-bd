@@ -49,9 +49,9 @@ export const EmailVerificationBanner: React.FC = () => {
   return (
     <div className="bg-amber-500/10 border-b border-amber-500/30 text-amber-900 dark:text-amber-200 px-4 py-3 transition-colors">
       <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-sm">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 min-w-0">
           <AlertTriangle className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0" />
-          <span>
+          <span className="min-w-0 break-all">
             <strong>{t('verify.banner')}</strong> ({currentUser.email})
           </span>
         </div>

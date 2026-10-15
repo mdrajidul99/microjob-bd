@@ -308,8 +308,18 @@ function MainRouter() {
     );
   };
 
+  const isAdminRoute = route === '/admins' || route === '/admin';
+
+  if (isAdminRoute) {
+    return (
+      <div className="min-h-screen bg-slate-900 text-slate-100 font-sans selection:bg-purple-500 selection:text-white max-w-full overflow-x-hidden">
+        <AdminLayout onNavigate={navigate} />
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors font-sans selection:bg-emerald-500 selection:text-white">
+    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors font-sans selection:bg-emerald-500 selection:text-white max-w-full overflow-x-hidden">
       {/* Platform Global Announcement Banner if active */}
       {settings?.announcementEn && (
         <div className="bg-gradient-to-r from-emerald-600 to-teal-700 text-white px-4 py-2 text-xs font-semibold text-center flex items-center justify-center gap-2 shadow-xs">

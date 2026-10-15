@@ -6,9 +6,10 @@ import {
   ShieldAlert,
   Ban,
   CheckCircle2,
+  Trash2,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import { getAllUsers, toggleUserSuspension } from '../../services/db';
+import { getAllUsers, toggleUserSuspension, moveToRecycleBin } from '../../services/db';
 import { UserProfile } from '../../types';
 
 export const AdminUsers: React.FC = () => {
@@ -17,6 +18,7 @@ export const AdminUsers: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [processingUid, setProcessingUid] = useState<string | null>(null);
+  const [feedback, setFeedback] = useState<string | null>(null);
 
   useEffect(() => {
     fetchUsers();
@@ -44,9 +46,34 @@ export const AdminUsers: React.FC = () => {
         currentUser.uid,
         currentUser.email || 'admin'
       );
+      setFeedback(`Updated suspension state for ${user.displayName}.`);
       await fetchUsers();
     } catch (err) {
       console.warn('Toggle suspension error:', err);
+    } finally {
+      setProcessingUid(null);
+    }
+  };
+
+  const handleMoveToRecycleBin = async (user: UserProfile) => {
+    if (!currentUser) return;
+    const confirm = window.confirm(`Move user "${user.displayName}" (${user.email}) to the Recycle Bin?`);
+    if (!confirm) return;
+
+    try {
+      setProcessingUid(user.uid);
+      await moveToRecycleBin(
+        'user',
+        user.uid,
+        user.displayName || user.email,
+        user,
+        currentUser.uid,
+        currentUser.email || 'admin'
+      );
+      setFeedback(`User "${user.displayName}" moved to Recycle Bin.`);
+      await fetchUsers();
+    } catch (err: any) {
+      alert(err.message || 'Failed to move user to Recycle Bin.');
     } finally {
       setProcessingUid(null);
     }
@@ -70,7 +97,7 @@ export const AdminUsers: React.FC = () => {
             User Directory & Access Control
           </h2>
           <p className="text-xs text-slate-500">
-            Inspect verification status and enforce platform moderation or suspensions.
+            Inspect verification status and enforce platform moderation, suspensions, or soft-deletes.
           </p>
         </div>
 
@@ -87,6 +114,15 @@ export const AdminUsers: React.FC = () => {
         </div>
       </div>
 
+      {feedback && (
+        <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs flex items-center justify-between">
+          <span>{feedback}</span>
+          <button onClick={() => setFeedback(null)} className="underline font-bold text-[11px]">
+            Dismiss
+          </button>
+        </div>
+      )}
+
       <div className="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-200 dark:border-slate-700 shadow-xs space-y-4">
         {loading ? (
           <div className="space-y-3">
@@ -102,8 +138,8 @@ export const AdminUsers: React.FC = () => {
             No users found matching query.
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
+          <div className="overflow-x-auto w-full">
+            <table className="w-full text-left text-xs min-w-[700px]">
               <thead>
                 <tr className="border-b border-slate-100 dark:border-slate-700 text-slate-400 font-bold">
                   <th className="py-2.5 px-3">Joined</th>
@@ -160,21 +196,31 @@ export const AdminUsers: React.FC = () => {
                     </td>
                     <td className="py-3 px-3 text-right">
                       {u.role !== 'admin' && (
-                        <button
-                          onClick={() => handleToggleSuspend(u)}
-                          disabled={processingUid === u.uid}
-                          className={`px-3 py-1 rounded-xl text-xs font-bold cursor-pointer transition-colors ${
-                            u.suspended
-                              ? 'bg-emerald-600 hover:bg-emerald-700 text-white'
-                              : 'bg-rose-500/10 text-rose-600 hover:bg-rose-500/20'
-                          }`}
-                        >
-                          {processingUid === u.uid
-                            ? '...'
-                            : u.suspended
-                            ? 'Reactivate'
-                            : 'Suspend'}
-                        </button>
+                        <div className="inline-flex items-center gap-1.5">
+                          <button
+                            onClick={() => handleToggleSuspend(u)}
+                            disabled={processingUid === u.uid}
+                            className={`px-3 py-1 rounded-xl text-xs font-bold cursor-pointer transition-colors ${
+                              u.suspended
+                                ? 'bg-emerald-600 hover:bg-emerald-700 text-white'
+                                : 'bg-rose-500/10 text-rose-600 hover:bg-rose-500/20'
+                            }`}
+                          >
+                            {processingUid === u.uid
+                              ? '...'
+                              : u.suspended
+                              ? 'Reactivate'
+                              : 'Suspend'}
+                          </button>
+                          <button
+                            onClick={() => handleMoveToRecycleBin(u)}
+                            disabled={processingUid === u.uid}
+                            className="p-1 rounded-lg text-rose-400 hover:bg-rose-500/10 cursor-pointer"
+                            title="Move to Recycle Bin"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
                       )}
                     </td>
                   </tr>

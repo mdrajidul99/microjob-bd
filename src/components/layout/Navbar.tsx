@@ -233,7 +233,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentRoute }) => {
 
                   {/* Popover */}
                   {notificationsOpen && (
-                    <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 py-2 z-50 animate-in fade-in zoom-in-95">
+                    <div className="absolute right-0 mt-2 w-[calc(100vw-2rem)] max-w-sm sm:w-96 bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 py-2 z-50 animate-in fade-in zoom-in-95">
                       <div className="flex items-center justify-between px-4 py-2 border-b border-slate-100 dark:border-slate-700">
                         <span className="font-bold text-sm text-slate-900 dark:text-white">
                           Notifications ({unreadCount} new)
@@ -304,7 +304,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentRoute }) => {
                   </button>
 
                   {userDropdownOpen && (
-                    <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 py-2 z-50 animate-in fade-in zoom-in-95">
+                    <div className="absolute right-0 mt-2 w-56 max-w-[calc(100vw-2rem)] bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 py-2 z-50 animate-in fade-in zoom-in-95">
                       <div className="px-4 py-2 border-b border-slate-100 dark:border-slate-700">
                         <p className="text-xs font-bold text-slate-900 dark:text-white truncate">
                           {profile?.displayName || 'User'}
@@ -385,16 +385,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentRoute }) => {
               </>
             ) : (
               // Logged out buttons
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 sm:gap-2">
                 <button
                   onClick={() => onNavigate('/login')}
-                  className="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                  className="px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                 >
                   {t('nav.login')}
                 </button>
                 <button
                   onClick={() => onNavigate('/register')}
-                  className="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs cursor-pointer transition-colors"
+                  className="hidden sm:inline-flex px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs cursor-pointer transition-colors"
                 >
                   {t('nav.register')}
                 </button>
@@ -483,6 +483,29 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentRoute }) => {
                 {t('nav.logout')}
               </button>
             </>
+          )}
+
+          {!currentUser && (
+            <div className="pt-3 border-t border-slate-100 dark:border-slate-800 grid grid-cols-2 gap-2">
+              <button
+                onClick={() => {
+                  onNavigate('/login');
+                  setMobileMenuOpen(false);
+                }}
+                className="py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-center text-xs font-bold text-slate-800 dark:text-slate-100 hover:bg-slate-50 dark:hover:bg-slate-800"
+              >
+                {t('nav.login')}
+              </button>
+              <button
+                onClick={() => {
+                  onNavigate('/register');
+                  setMobileMenuOpen(false);
+                }}
+                className="py-2.5 rounded-xl bg-emerald-600 text-white text-center text-xs font-bold hover:bg-emerald-700 shadow-xs"
+              >
+                {t('nav.register')}
+              </button>
+            </div>
           )}
         </div>
       )}

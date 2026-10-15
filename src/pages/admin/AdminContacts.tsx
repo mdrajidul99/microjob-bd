@@ -109,7 +109,7 @@ export const AdminContacts: React.FC = () => {
                   </div>
                 </div>
 
-                <p className="text-xs text-slate-700 dark:text-slate-300 whitespace-pre-line leading-relaxed bg-white dark:bg-slate-800 p-3.5 rounded-xl border border-slate-100 dark:border-slate-700/60">
+                <p className="text-xs text-slate-700 dark:text-slate-300 whitespace-pre-line leading-relaxed bg-white dark:bg-slate-800 p-3.5 rounded-xl border border-slate-100 dark:border-slate-700/60 break-words">
                   {msg.message}
                 </p>
 

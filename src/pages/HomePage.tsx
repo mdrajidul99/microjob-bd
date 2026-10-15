@@ -87,7 +87,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onSelectJob }) =
                   ? 'কাজের নাম বা কীওয়ার্ড লিখুন (যেমন: ইউটিউব, ফেসবুক, অ্যাপ রিভিউ)...'
                   : 'Search tasks (e.g., YouTube subscribe, Facebook share, App install)...'
               }
-              className="w-full bg-transparent border-none text-slate-900 dark:text-white text-sm focus:outline-none px-2"
+              className="min-w-0 flex-1 bg-transparent border-none text-slate-900 dark:text-white text-xs sm:text-sm focus:outline-none px-2"
             />
             <button
               type="submit"

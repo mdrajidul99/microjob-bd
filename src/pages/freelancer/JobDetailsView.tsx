@@ -231,7 +231,7 @@ export const JobDetailsView: React.FC<JobDetailsViewProps> = ({
           <h3 className="text-base font-extrabold text-slate-900 dark:text-white mb-2">
             {language === 'bn' ? 'কাজের বিবরণ' : 'Task Overview'}
           </h3>
-          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 whitespace-pre-line leading-relaxed">
+          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 whitespace-pre-line leading-relaxed break-words">
             {job.description}
           </p>
         </div>
@@ -240,7 +240,7 @@ export const JobDetailsView: React.FC<JobDetailsViewProps> = ({
           <h3 className="text-base font-extrabold text-slate-900 dark:text-white mb-2">
             {language === 'bn' ? 'ধাপ অনুসারে কাজের নির্দেশনা' : 'Step-by-Step Instructions'}
           </h3>
-          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 text-xs sm:text-sm text-slate-700 dark:text-slate-200 whitespace-pre-line leading-relaxed font-mono">
+          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 text-xs sm:text-sm text-slate-700 dark:text-slate-200 whitespace-pre-line leading-relaxed font-mono break-words">
             {job.instructions}
           </div>
         </div>

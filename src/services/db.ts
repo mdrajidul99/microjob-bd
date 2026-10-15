@@ -13,6 +13,7 @@ import {
   onSnapshot,
   runTransaction,
   serverTimestamp,
+  deleteDoc,
 } from 'firebase/firestore';
 import { db, handleFirestoreError, OperationType } from '../lib/firebase';
 import {
@@ -30,6 +31,7 @@ import {
   PlatformSettings,
   AuditLog,
   UserProfile,
+  RecycleBinItem,
 } from '../types';
 
 // Default initial categories
@@ -1377,3 +1379,193 @@ export async function getAuditLogs(): Promise<AuditLog[]> {
     handleFirestoreError(error, OperationType.LIST, 'auditLogs');
   }
 }
+
+// ==================== RECYCLE BIN OPERATIONS ====================
+
+export async function moveToRecycleBin(
+  itemType: RecycleBinItem['itemType'],
+  originalId: string,
+  title: string,
+  data: any,
+  adminUid: string,
+  adminEmail: string
+): Promise<void> {
+  try {
+    const now = new Date().toISOString();
+    const recycleRef = doc(collection(db, 'recycleBin'));
+    await setDoc(recycleRef, {
+      itemType,
+      originalId,
+      title,
+      deletedAt: now,
+      deletedBy: adminEmail,
+      data,
+    });
+
+    // Handle soft-delete or removal from primary collection
+    if (itemType === 'job') {
+      const jobRef = doc(db, 'jobs', originalId);
+      await updateDoc(jobRef, {
+        status: 'cancelled',
+        updatedAt: now,
+      });
+    } else if (itemType === 'user') {
+      const userRef = doc(db, 'users', originalId);
+      await updateDoc(userRef, {
+        suspended: true,
+        updatedAt: now,
+      });
+    } else if (itemType === 'category') {
+      const catRef = doc(db, 'categories', originalId);
+      await deleteDoc(catRef);
+    } else if (itemType === 'contact') {
+      const contactRef = doc(db, 'contactMessages', originalId);
+      await updateDoc(contactRef, {
+        status: 'archived',
+      });
+    }
+
+    // Log in Audit Trail
+    await addDoc(collection(db, 'auditLogs'), {
+      actorUid: adminUid,
+      actorEmail: adminEmail,
+      actionType: 'MOVE_TO_RECYCLE_BIN',
+      targetCollection: itemType,
+      targetId: originalId,
+      details: `Moved ${itemType} "${title}" (ID: ${originalId}) to Recycle Bin`,
+      timestamp: now,
+    });
+  } catch (error) {
+    handleFirestoreError(error, OperationType.CREATE, 'recycleBin');
+  }
+}
+
+export async function getRecycleBinItems(): Promise<RecycleBinItem[]> {
+  try {
+    const snap = await getDocs(query(collection(db, 'recycleBin'), orderBy('deletedAt', 'desc')));
+    const items: RecycleBinItem[] = [];
+    snap.forEach((d) => {
+      items.push({
+        id: d.id,
+        ...(d.data() as Omit<RecycleBinItem, 'id'>),
+      });
+    });
+    return items;
+  } catch (error) {
+    handleFirestoreError(error, OperationType.LIST, 'recycleBin');
+  }
+}
+
+export async function restoreFromRecycleBin(
+  item: RecycleBinItem,
+  adminUid: string,
+  adminEmail: string
+): Promise<void> {
+  try {
+    const now = new Date().toISOString();
+
+    if (item.itemType === 'job') {
+      const jobRef = doc(db, 'jobs', item.originalId);
+      await setDoc(
+        jobRef,
+        {
+          ...item.data,
+          status: 'active',
+          updatedAt: now,
+        },
+        { merge: true }
+      );
+    } else if (item.itemType === 'user') {
+      const userRef = doc(db, 'users', item.originalId);
+      await updateDoc(userRef, {
+        suspended: false,
+        updatedAt: now,
+      });
+    } else if (item.itemType === 'category') {
+      const catRef = doc(db, 'categories', item.originalId);
+      await setDoc(catRef, item.data);
+    } else if (item.itemType === 'contact') {
+      const contactRef = doc(db, 'contactMessages', item.originalId);
+      await updateDoc(contactRef, {
+        status: 'new',
+      });
+    }
+
+    // Remove from recycle bin
+    await deleteDoc(doc(db, 'recycleBin', item.id));
+
+    // Audit log
+    await addDoc(collection(db, 'auditLogs'), {
+      actorUid: adminUid,
+      actorEmail: adminEmail,
+      actionType: 'RESTORE_FROM_RECYCLE_BIN',
+      targetCollection: item.itemType,
+      targetId: item.originalId,
+      details: `Restored ${item.itemType} "${item.title}" from Recycle Bin`,
+      timestamp: now,
+    });
+  } catch (error) {
+    handleFirestoreError(error, OperationType.DELETE, `recycleBin/${item.id}`);
+  }
+}
+
+export async function permanentlyDeleteFromRecycleBin(
+  item: RecycleBinItem,
+  adminUid: string,
+  adminEmail: string
+): Promise<void> {
+  try {
+    const now = new Date().toISOString();
+
+    if (item.itemType === 'job') {
+      try {
+        await deleteDoc(doc(db, 'jobs', item.originalId));
+      } catch (e) {
+        // May already be deleted
+      }
+    } else if (item.itemType === 'category') {
+      try {
+        await deleteDoc(doc(db, 'categories', item.originalId));
+      } catch (e) {
+        // May already be deleted
+      }
+    } else if (item.itemType === 'contact') {
+      try {
+        await deleteDoc(doc(db, 'contactMessages', item.originalId));
+      } catch (e) {
+        // May already be deleted
+      }
+    }
+
+    // Remove from recycle bin document
+    await deleteDoc(doc(db, 'recycleBin', item.id));
+
+    // Audit log
+    await addDoc(collection(db, 'auditLogs'), {
+      actorUid: adminUid,
+      actorEmail: adminEmail,
+      actionType: 'PERMANENT_DELETE',
+      targetCollection: item.itemType,
+      targetId: item.originalId,
+      details: `Permanently destroyed ${item.itemType} "${item.title}" from Recycle Bin`,
+      timestamp: now,
+    });
+  } catch (error) {
+    handleFirestoreError(error, OperationType.DELETE, `recycleBin/${item.id}`);
+  }
+}
+
+export async function emptyRecycleBin(
+  items: RecycleBinItem[],
+  adminUid: string,
+  adminEmail: string
+): Promise<void> {
+  try {
+    for (const item of items) {
+      await permanentlyDeleteFromRecycleBin(item, adminUid, adminEmail);
+    }
+  } catch (error) {
+    handleFirestoreError(error, OperationType.DELETE, 'recycleBin');
+  }
+}
+
